@@ -2,120 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Food Fusion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recipe API Test</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #fdfdfd;
-    }
-
-    header {
-      background-color: #ff6f61;
-      color: white;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .search-bar {
-      padding: 10px;
-      text-align: center;
-    }
-
-    .search-bar input {
-      width: 80%;
-      padding: 10px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-    }
-
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 300px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .card img {
-      width: 100%;
-      border-radius: 8px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #eee;
-      margin-top: 20px;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: #ff6f61; }
+    ul { list-style: none; padding: 0; }
+    li { background: #ffe9e3; margin: 8px 0; padding: 10px; border-radius: 5px; }
   </style>
 </head>
 <body>
-
-  <header>
-    <h1>Food Fusion</h1>
-  </header>
-
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search for recipes..." />
-  </div>
-
-  <div class="cards" id="recipeContainer"></div>
-
-  <footer>
-    <p>About | Contact | Privacy</p>
-  </footer>
+  <h1>Chicken Recipes</h1>
+  <ul id="recipes-list"></ul>
 
   <script>
-  const container = document.getElementById('recipeContainer');
-  const searchInput = document.getElementById('searchInput');
+    async function getRecipes() {
+      try {
+        const response = await fetch('https://api.spoonacular.com/recipes/complexSearch?query=chicken&number=5', {
+          headers: { 'x-api-key': '9227959018934aabbb5e339b607e3310' }
+        });
+        if (!response.ok) throw new Error('Network response was not ok');
 
-  function fetchRecipes(query) {
-    container.innerHTML = 'Loading...';
-    fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=query`)
-      .then(res => res.json())
-      .then(data => 
-        container.innerHTML = ”;
-        if (data.meals) 
-          data.meals.forEach(meal => 
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-              <img src="{meal.strMealThumb}" alt="meal.strMeal">
-              <h3>{meal.strMeal}</h3>
-            `;
-            container.appendChild(card);
+        const data = await response.json();
+        const list = document.getElementById('recipes-list');
+        if (data.results && data.results.length > 0) {
+          data.results.forEach(recipe => {
+            const li = document.createElement('li');
+            li.textContent = recipe.title;
+            list.appendChild(li);
           });
         } else {
-          container.innerHTML = '<p>No recipes found.</p>';
+          list.textContent = 'No recipes found.';
         }
-      })
-      .catch(() => {
-        container.innerHTML = '<p>Error fetching recipes.</p>';
-      });
-  }
+      } catch (error) {
+        document.getElementById('recipes-list').textContent = 'Error fetching recipes: ' + error.message;
+      }
+    }
 
-  // Initial load
-fetchRecipes('chicken');
-
-  searchInput.addEventListener('input', (e) => {
-    const query = e.target.value;
-    if (query.length > 2) fetchRecipes(query);
-  });
-</script>
-  
+    getRecipes();
+  </script>
 </body>
 </html>
