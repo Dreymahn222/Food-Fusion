@@ -80,42 +80,42 @@
   </footer>
 
   <script>
-    const container = document.getElementById('recipeContainer');
-    const searchInput = document.getElementById('searchInput');
+  const container = document.getElementById('recipeContainer');
+  const searchInput = document.getElementById('searchInput');
 
-    function fetchRecipes(query) {
-      container.innerHTML = 'Loading...';
-      fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=query`)
-        .then(res => res.json())
-        .then(data => 
-          container.innerHTML = ”;
-          if (data.meals) 
-            data.meals.forEach(meal => 
-              const card = document.createElement('div');
-              card.className = 'card';
-              card.innerHTML = `
-                <img src="{meal.strMealThumb}" alt="meal.strMeal">
-                <h3>{meal.strMeal}</h3>
-              `;
-              container.appendChild(card);
-            });
-          } else {
+  function fetchRecipes(query) {
+    container.innerHTML = 'Loading...';
+    fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=query`)
+      .then(res => res.json())
+      .then(data => 
+        container.innerHTML = ”;
+        if (data.meals) 
+          data.meals.forEach(meal => 
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+              <img src="{meal.strMealThumb}" alt="meal.strMeal">
+              <h3>{meal.strMeal}</h3>
+            `;
+            container.appendChild(card);
+          });
+        } else {
           container.innerHTML = '<p>No recipes found.</p>';
-          }
-        })
-        .catch(() => {
-          container.innerHTML = '<p>Error fetching recipes.</p>';
-        });
-    }
+        }
+      })
+      .catch(() => {
+        container.innerHTML = '<p>Error fetching recipes.</p>';
+      });
+  }
 
-    // Initial load
-    fetchRecipes('chicken');
+  // Initial load
+fetchRecipes('chicken');
 
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value;
-      if (query.length > 2) fetchRecipes(query);
-    });
-  </script>
-
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value;
+    if (query.length > 2) fetchRecipes(query);
+  });
+</script>
+  
 </body>
 </html>
